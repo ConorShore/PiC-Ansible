@@ -1,0 +1,14 @@
+---
+- name: Shutdown all nodes besides control, the shutdown control
+  become: yes
+  hosts: pis:!controllers
+  tasks:
+  - community.general.shutdown:
+    delay: 10
+
+- name: Shutdown controller
+  become: yes
+  hosts: controllers
+  tasks:
+  - community.general.shutdown:
+    delay: 10

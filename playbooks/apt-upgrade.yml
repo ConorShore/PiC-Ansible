@@ -1,0 +1,10 @@
+---
+- name: Apt update and upgrade
+  become: yes
+  hosts: pis
+  tasks:
+  - apt:
+      update_cache: yes
+      upgrade: yes
+      cache_valid_time: 86400
+

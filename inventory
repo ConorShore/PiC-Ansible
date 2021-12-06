@@ -8,3 +8,6 @@ pic-4b4-0.local
 [pis:children]
 fours
 zeros
+
+[controllers]
+pic-4b4-0.local
