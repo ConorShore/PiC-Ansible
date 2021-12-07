@@ -1,0 +1,32 @@
+---
+- name: Install K3S on controller node
+  hosts: controllers
+  become: yes
+
+  tasks:
+  - name: Apt update and upgrade
+    apt:
+      update_cache: yes
+      upgrade: yes
+      cache_valid_time: 86400
+
+  - name: Check if k3s is already installed
+    stat:
+      path: "/etc/rancher/k3s"
+    register: k3sdir
+
+  - name: K3S already install, 
+    debug:
+      msg: "K3S directory already present, skipping install"
+    when: k3sdir.stat.exists
+
+  - name: Add cgroup
+    ansible.builtin.shell: echo -n " cgroup_memory=1 cgroup_enable=memory" >> /boot/cmdline.txt
+    ansible.builtin.shell: curl -sfL https://get.k3s.io | sh -
+    when: not k3sdir.stat.exists
+
+  - name: Reboot
+    reboot:
+      reboot_timeout: 3600
+    when: not k3sdir.stat.exists
+
