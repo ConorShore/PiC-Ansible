@@ -1,0 +1,8 @@
+---
+- name: Setup bridge interface
+  become: yes
+  hosts: controllers
+  tasks:
+    ansible.builtin.shell: echo "dtoverlay=dwc2" >> /boot/config.txt
+    ansible.builtin.shell: echo -n " modules-load=dwc2,g_ether" >> /boot/cmdline.txt
+

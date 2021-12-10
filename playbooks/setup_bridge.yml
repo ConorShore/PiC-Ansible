@@ -1,0 +1,9 @@
+---
+- name: Setup bridge interface
+  become: yes
+  hosts: controllers
+  tasks:
+    ansible.builtin.shell: brctl addbr bridge_usb
+    ansible.builtin.shell: ifconfig | grep usb | cut -d":" -f1 | tr '\n' ' ' | xargs brctl addif bridge_usb
+    ansible.builtin.shell: ifconfig bridge_usb up
+

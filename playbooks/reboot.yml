@@ -1,0 +1,16 @@
+---
+- name: Reboot nodes first
+  hosts: zeros
+  become: yes
+  tasks:
+  - reboot:
+      reboot_timeout: 3600
+
+- name: Reboot controller
+  hosts: controllers
+  become: yes
+  tasks:
+  - reboot:
+      reboot_timeout: 3600
+
+
