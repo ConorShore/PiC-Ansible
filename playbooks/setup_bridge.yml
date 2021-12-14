@@ -3,7 +3,16 @@
   become: yes
   hosts: controllers
   tasks:
-    ansible.builtin.shell: brctl addbr bridge_usb
-    ansible.builtin.shell: ifconfig | grep usb | cut -d":" -f1 | tr '\n' ' ' | xargs brctl addif bridge_usb
-    ansible.builtin.shell: ifconfig bridge_usb up
+  - name: Install bridge control
+    apt:
+      name: bridge-utils
+      update_cache: yes
+      cache_valid_time: 86400
+
+  - name: Add Bridge
+    when: '"bridge_usb" not in ansible_interfaces'
+    shell: |
+      brctl addbr bridge_usb
+      ifconfig | grep usb | cut -d":" -f1 | tr '\n' ' ' | xargs brctl addif bridge_usb
+      ifconfig bridge_usb up
 

@@ -1,0 +1,8 @@
+---
+- name: Setup usb ethernet gadget
+  become: yes
+  hosts: nodes
+  tasks:
+  - name: get add
+    ansible.builtin.debug: 
+      var: ansible_interfaces

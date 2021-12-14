@@ -1,8 +1,26 @@
 ---
-- name: Setup bridge interface
+- name: Setup usb ethernet gadget
   become: yes
-  hosts: controllers
+  hosts: nodes
   tasks:
-    ansible.builtin.shell: echo "dtoverlay=dwc2" >> /boot/config.txt
-    ansible.builtin.shell: echo -n " modules-load=dwc2,g_ether" >> /boot/cmdline.txt
+  - name: Check interface doesn't already exist
+    when: '"usb0" in ansible_interfaces'
+    debug:
+      msg: "usb0 interface already detected, skipping"
+
+  - name: Make config changes
+    when: '"usb0" not in ansible_interfaces'
+    shell: |
+      chmod +777 /boot/config.txt
+      chmod +777 /boot/cmdline.txt
+      echo "dtoverlay=dwc2" | tee -a /boot/config.txt
+      echo -n " modules-load=dwc2,g_ether" | tee -a /boot/cmdline.txt
+      chmod +755 /boot/config.txt
+      chmod +755 /boot/cmdline.txt
+
+  - name: Reboot 
+    when: '"usb0" not in ansible_interfaces'
+    reboot:
+      reboot_timeout: 3600
+  
 
